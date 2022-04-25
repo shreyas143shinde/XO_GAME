@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --player1: red;
+            --player2: blue;
+            --theme: black;
+            --borderColor: coral;
+        }
+
+        .container {
+            height: 100vh;
+            width: 100vw;
+            background-color: var(--theme);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main {
+            display: flex;
+            flex-wrap: wrap;
+            width: 350px;
+            overflow: hidden;
+            gap: 20px
+        }
+
+        .box {
+            height: 100px;
+            width: 100px;
+            border: 2px solid var(--borderColor);
+        }
+
+
+
+        #output {
+            color: white;
+            font-size: 40px;
+            /* background-color: red; */
+            padding: 20px;
+            transform: scale(0);
+        }
+
+        .red {
+            background-color: var(--player1);
+        }
+
+        .blue {
+            background-color: var(--player2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="main">
+            <div class="box" id="d1" onclick="game('d1')"></div>
+            <div class="box" id="d2" onclick="game('d2')"></div>
+            <div class="box" id="d3" onclick="game('d3')"></div>
+            <div class="box" id="d4" onclick="game('d4')"></div>
+            <div class="box" id="d5" onclick="game('d5')"></div>
+            <div class="box" id="d6" onclick="game('d6')"></div>
+            <div class="box" id="d7" onclick="game('d7')"></div>
+            <div class="box" id="d8" onclick="game('d8')"></div>
+            <div class="box" id="d9" onclick="game('d9')"></div>
+        </div>
+        <div id="output">Red is Winner</div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script>
+        gsap.from(".box", {
+            scale: 0,
+            duration: 2,
+            stagger: {
+                each: 0.2,
+                grid: "auto",
+                from: "center"
+            }
+        })
+        var chance = "red"
+        function game(id) {
+            // document.querySelector("#" + id).style.backgroundColor = "red";
+            var hasRed = document.querySelector("#" + id).classList.contains("red")
+            var hasBlue = document.querySelector("#" + id).classList.contains("blue")
+
+            if (hasRed || hasBlue) {
+                // class ahe
+            } else {
+                // class nahi
+                if (chance == "red") {
+                    document.querySelector("#" + id).classList.add("red")
+                    chance = "blue"
+                } else {
+                    document.querySelector("#" + id).classList.add("blue")
+                    chance = "red"
+                }
+                gsap.to("#" + id, {
+                    rotation: 360,
+                    scale: 0.5,
+                    duration: 0.5,
+                })
+
+            }
+            winner()
+
+
+        }
+        function winner(id) {
+
+            if (checkWinner("#d1", "#d2", "#d3", "red")) {
+                addAnimation(id)
+            } else if (checkWinner("#d4", "#d5", "#d6", "red")) {
+                addAnimation(id)
+
+            } else if (checkWinner("#d7", "#d8", "#d9", "red")) {
+                addAnimation(id)
+
+            } else if (checkWinner("#d1", "#d4", "#d7", "red")) {
+                addAnimation(id)
+
+            } else if (checkWinner("#d2", "#d5", "#d8", "red")) {
+                addAnimation(id)
+
+            } else if (checkWinner("#d3", "#d6", "#d9", "red")) {
+                addAnimation(id)
+            } else if (checkWinner("#d1", "#d5", "#d9", "red")) {
+                addAnimation(id)
+            } else if (checkWinner("#d3", "#d5", "#d7", "red")) {
+                addAnimation(id)
+            } else if (checkWinner("#d1", "#d2", "#d3", "blue")) {
+                addAnimation(id)
+            } else if (checkWinner("#d4", "#d5", "#d6", "blue")) {
+                addAnimation(id)
+
+            } else if (checkWinner("#d7", "#d8", "#d9", "blue")) {
+                addAnimation(id)
+
+            } else if (checkWinner("#d1", "#d4", "#d7", "blue")) {
+                addAnimation(id)
+
+            } else if (checkWinner("#d2", "#d5", "#d8", "blue")) {
+                addAnimation(id)
+
+            } else if (checkWinner("#d3", "#d6", "#d9", "blue")) {
+                addAnimation(id)
+            } else if (checkWinner("#d1", "#d5", "#d9", "blue")) {
+                addAnimation(id)
+            } else if (checkWinner("#d3", "#d5", "#d7", "blue")) {
+                addAnimation(id)
+            } else {
+                if (checkFill()) {
+                    console.log("Draw");
+                    draw()
+                }
+            }
+        }
+        function checkWinner(id1, id2, id3, cc) {
+            var x = document.querySelector(id1).classList.contains(cc)
+            var y = document.querySelector(id2).classList.contains(cc)
+            var z = document.querySelector(id3).classList.contains(cc)
+            // return x && y && z ? true : false
+            if (x && y && z) {
+                if (cc == "red") {
+                    document.getElementById("output").innerHTML = "red winner"
+                    document.getElementById("output").classList.add("red")
+                } else {
+                    document.getElementById("output").innerHTML = "blue winner"
+                    document.getElementById("output").classList.add("blue")
+
+                }
+                return true
+            } else {
+                return false
+            }
+        }
+        function addAnimation(id) {
+            var tl = gsap.timeline()
+            tl.to("#" + id, {
+                scale: 10,
+                duration: 1
+            })
+            tl.to(".main", {
+                rotation: 360,
+                scale: 0,
+                duration: 1
+            })
+            tl.to("#output", {
+                // rotation: 360,
+                scale: 2,
+                duration: 0.5,
+            })
+        }
+        function checkFill() {
+            let d1HasRed = document.querySelector("#d1").classList.contains("red")
+            let d1HasBlue = document.querySelector("#d1").classList.contains("blue")
+
+            let d2HasRed = document.querySelector("#d2").classList.contains("red")
+            let d2HasBlue = document.querySelector("#d2").classList.contains("blue")
+
+            let d3HasRed = document.querySelector("#d3").classList.contains("red")
+            let d3HasBlue = document.querySelector("#d3").classList.contains("blue")
+
+            let d4HasRed = document.querySelector("#d4").classList.contains("red")
+            let d4HasBlue = document.querySelector("#d4").classList.contains("blue")
+
+            let d5HasRed = document.querySelector("#d5").classList.contains("red")
+            let d5HasBlue = document.querySelector("#d5").classList.contains("blue")
+
+            let d6HasRed = document.querySelector("#d6").classList.contains("red")
+            let d6HasBlue = document.querySelector("#d6").classList.contains("blue")
+
+            let d7HasRed = document.querySelector("#d7").classList.contains("red")
+            let d7HasBlue = document.querySelector("#d7").classList.contains("blue")
+
+            let d8HasRed = document.querySelector("#d8").classList.contains("red")
+            let d8HasBlue = document.querySelector("#d8").classList.contains("blue")
+
+            let d9HasRed = document.querySelector("#d9").classList.contains("red")
+            let d9HasBlue = document.querySelector("#d9").classList.contains("blue")
+
+            if (
+                (d1HasBlue || d1HasRed)
+                && (d2HasBlue || d2HasRed)
+                && (d3HasBlue || d3HasRed)
+                && (d4HasBlue || d4HasRed)
+                && (d5HasBlue || d5HasRed)
+                && (d6HasBlue || d6HasRed)
+                && (d7HasBlue || d7HasRed)
+                && (d8HasBlue || d8HasRed)
+                && (d9HasBlue || d9HasRed)
+
+            ) {
+                return true
+            } else {
+                return false
+            }
+        }
+        function draw() {
+
+            for (let i = 1; i <= 9; i++) {
+                document.getElementById("d" + i).classList.remove("red")
+                document.getElementById("d" + i).classList.remove("blue")
+
+            }
+            gsap.to(".box", {
+                rotation: "+=360",
+                delay: 1,
+                scale: 1,
+                duration: 0.5,
+                stagger: {
+                    each: 0.2,
+                    grid: "auto",
+                    from: "center"
+                }
+            })
+        }
+
+    </script>
+</body>
+
+</html>
